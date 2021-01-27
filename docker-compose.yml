@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_USER: pokedex_db_user
+      POSTGRES_DB: pokedex
+    ports:
+      - 5432:5432
+b_user
+      POSTGRES_DB: pokedex
+    ports:
+      - 5432:5432

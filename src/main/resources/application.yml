@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    username: pokedex_db_user
+    password: changeme
+    url: jdbc:postgresql//localhost:3306/pokedex
+  jpa:
+    open-in-view: false
+
