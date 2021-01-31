@@ -3,6 +3,8 @@ package be.moesmedia.pokedex.api.clients;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import be.moesmedia.pokedex.api.clients.dto.GenerationsResponse;
+import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,17 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class PokedexRestClient {
-    
+
     private final RestTemplate pokedexRestTemplate;
 
-    public void getPokedexes() {
-        final var pokedex = pokedexRestTemplate.getForObject("/pokedex", String.class);
-        log.info(pokedex);
+    public void getGenerations() {
+        final var generation = pokedexRestTemplate.getForObject("/generation", GenerationsResponse.class);
+        log.info(generation.toString());
     }
 
-    public void getSinglePokemon(int pokemonNumber){
-    
-        var pokemon = pokedexRestTemplate.getForObject("/pokemon/{pokemonNumber}", String.class, pokemonNumber);
-        //log.info(pokemon);
+    public void getSinglePokemon(int pokemonNumber) {
+        var pokemon = pokedexRestTemplate.getForObject("/pokemon/{pokemonNumber}", PokemonResponse.class, pokemonNumber);
+        log.info(pokemon.toString());
     }
 }

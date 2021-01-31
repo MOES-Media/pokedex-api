@@ -20,10 +20,10 @@ public class PokedexController {
     private final PokedexRestClient pokedexRestClient;
 
     @GetMapping
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/generations")
     @ResponseStatus(HttpStatus.OK)
-    public void getPokedexes() {
-        pokedexRestClient.getPokedexes();
+    public void getGenerations() {
+        pokedexRestClient.getGenerations();
     }
     @GetMapping
     @RequestMapping(value = "/pokemon/{pokemonNumber}")
