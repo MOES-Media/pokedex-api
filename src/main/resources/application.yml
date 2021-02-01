@@ -1,8 +1,11 @@
 spring:
+
   datasource:
     username: pokedex_db_user
     password: changeme
-    url: jdbc:postgresql//localhost:5432/pokedex
+    url: jdbc:postgresql://localhost:5432/pokedex
+    driver-class-name: org.postgresql.Driver
+  
   jpa:
     open-in-view: false
 
