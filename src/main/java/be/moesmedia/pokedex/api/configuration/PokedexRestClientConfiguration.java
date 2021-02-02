@@ -7,10 +7,12 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class PokedexRestClientConfiguration {
+
+    public static String BASE_URL = "https://pokeapi.co/api/v2";
     
     @Bean
     public RestTemplateBuilder pokedexRestTemplateBuilder() {
-        return new RestTemplateBuilder().rootUri("https://pokeapi.co/api/v2/");
+        return new RestTemplateBuilder().rootUri(BASE_URL);
     }
 
     @Bean

@@ -15,13 +15,19 @@ public class PokedexRestClient {
 
     private final RestTemplate pokedexRestTemplate;
 
-    public void getGenerations() {
-        final var generation = pokedexRestTemplate.getForObject("/generation", GenerationsResponse.class);
-        log.info(generation.toString());
+    public GenerationsResponse getGenerations() {
+        final var result = pokedexRestTemplate.getForObject("/generation", GenerationsResponse.class);
+        log.info(result.toString());
+        return result;
     }
 
     public void getSinglePokemon(int pokemonNumber) {
         var pokemon = pokedexRestTemplate.getForObject("/pokemon/{pokemonNumber}", PokemonResponse.class, pokemonNumber);
         log.info(pokemon.toString());
+    }
+
+    public <T> T getNamedResource(String namedResourceLocation, Class<T> responseType) {
+        log.info(namedResourceLocation);
+        return pokedexRestTemplate.getForObject(namedResourceLocation, responseType);
     }
 }

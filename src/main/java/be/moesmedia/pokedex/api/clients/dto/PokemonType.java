@@ -12,10 +12,3 @@ public class PokemonType {
         private String name;
     }
 }
-
-/**
- * 
- * { "slot": 1, "type": { "name": "grass", "url":
- * "https://pokeapi.co/api/v2/type/12/" } },
- * 
- */

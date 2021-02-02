@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import be.moesmedia.pokedex.api.clients.PokedexRestClient;
+import be.moesmedia.pokedex.api.services.PokedexDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,11 +20,13 @@ public class PokedexController {
 
     private final PokedexRestClient pokedexRestClient;
 
+    private final PokedexDataService pokedexDataService;
+
     @GetMapping
     @RequestMapping(value = "/generations")
     @ResponseStatus(HttpStatus.OK)
     public void getGenerations() {
-        pokedexRestClient.getGenerations();
+        pokedexDataService.populateGenerationsTable();
     }
     @GetMapping
     @RequestMapping(value = "/pokemon/{pokemonNumber}")
