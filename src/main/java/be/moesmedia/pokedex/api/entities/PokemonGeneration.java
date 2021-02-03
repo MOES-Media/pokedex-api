@@ -2,6 +2,9 @@ package be.moesmedia.pokedex.api.entities;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import be.moesmedia.pokedex.api.clients.dto.GenerationResponse;
 import lombok.Data;
 
@@ -25,6 +28,7 @@ public class PokemonGeneration {
     private String location;
 
     @OneToMany(mappedBy = "generation")
+    @Cascade(CascadeType.PERSIST)
     private List<SinglePokemon> pokemons = new ArrayList<>();
 
 
@@ -32,13 +36,13 @@ public class PokemonGeneration {
         final var generation = new PokemonGeneration();
         generation.setLocation(response.getMainRegion().getName());
         generation.setName(response.getName());
-        return null;
+        return generation;
     }
 
-    public SinglePokemon addPokemonToGeneration(SinglePokemon pokemon){
+    public PokemonGeneration addPokemonToGeneration(SinglePokemon pokemon){
         pokemon.setGeneration(this);
         pokemons.add(pokemon);
-        return pokemon;
+        return this;
     }
 
 }

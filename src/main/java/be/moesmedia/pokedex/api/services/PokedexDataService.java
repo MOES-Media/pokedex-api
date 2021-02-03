@@ -1,11 +1,17 @@
 package be.moesmedia.pokedex.api.services;
 
-import java.util.stream.Collectors;
+import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
+import be.moesmedia.pokedex.api.entities.SinglePokemon;
+import be.moesmedia.pokedex.api.repositories.SinglePokemonRepository;
+
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
 import be.moesmedia.pokedex.api.clients.PokedexRestClient;
 import be.moesmedia.pokedex.api.clients.dto.GenerationResponse;
+import be.moesmedia.pokedex.api.clients.dto.NamedResource;
 import be.moesmedia.pokedex.api.configuration.PokedexRestClientConfiguration;
 import be.moesmedia.pokedex.api.entities.PokemonGeneration;
 import be.moesmedia.pokedex.api.repositories.PokemonGenerationsRepository;
@@ -20,24 +26,36 @@ public class PokedexDataService {
     private final PokedexRestClient pokedexRestClient;
 
     private final PokemonGenerationsRepository pokemonGenerationsRepository;
+    private final SinglePokemonRepository singlePokemonRepository;
 
+    private final Function<NamedResource, String> extractResourceLocation = namedResource -> namedResource
+            .getGenerationDetailLocation().replace(PokedexRestClientConfiguration.BASE_URL, "");
+
+    /**
+     * TODO in other files 1. create pokemon entity 2. create pokemon repository
+     */
     public void populateGenerationsTable() {
-        log.debug("fetching generations overview");
+
+        log.info("fetching generations overview");
         final var generationsOverview = pokedexRestClient.getGenerations();
-        final var results = generationsOverview.getResults().stream().map(namedResource -> {
-            log.debug("fetching generation detail");
-            return pokedexRestClient.getNamedResource(
+
+        generationsOverview.getResults().stream().map(namedResource -> {
+            log.info("fetching generation detail");
+            final var generation = pokedexRestClient.getNamedResource(
                     namedResource.getGenerationDetailLocation().replace(PokedexRestClientConfiguration.BASE_URL, ""),
                     GenerationResponse.class);
-        }).map(generationResponse -> {
-            final var generation = new PokemonGeneration();
-            generation.setLocation(generationResponse.getMainRegion().getName());
-            generation.setName(generationResponse.getName());
-
-            log.debug("writing generation to database");
-            return pokemonGenerationsRepository.save(generation);
-        }).collect(Collectors.toList());
-        log.info(results.toString());
+            return generation;
+        }).forEach(generationResponse -> {
+            log.info("writing generation to database");
+            final var pokemonGeneration = pokemonGenerationsRepository
+                    .save(PokemonGeneration.fromGenerationResponse(generationResponse));
+            generationResponse
+                    .getPokemons().stream().map(extractResourceLocation).map(resourceLocation -> pokedexRestClient
+                            .getNamedResource(resourceLocation, PokemonResponse.class))
+                    .map(SinglePokemon::fromPokemonResponse).map(pokemon -> {
+                        pokemon.setGeneration(pokemonGeneration);
+                        return pokemon;
+                    }).forEach(singlePokemonRepository::save);
+        });
     }
-
 }

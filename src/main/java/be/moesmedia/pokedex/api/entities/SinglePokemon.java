@@ -1,6 +1,5 @@
 package be.moesmedia.pokedex.api.entities;
 
-import be.moesmedia.pokedex.api.clients.dto.NamedResource;
 import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
 import lombok.Data;
 
@@ -16,7 +15,6 @@ public class SinglePokemon {
     @SequenceGenerator(name = "pokemon_id_seq", sequenceName = "pokemon_id_seq", allocationSize = 3)
     private Long id;
 
-
     @Column
     private String name;
     @Column
@@ -28,16 +26,16 @@ public class SinglePokemon {
     @JoinColumn(name = "generation_id")
     private PokemonGeneration generation;
 
-    //@Column
-    //private PokemonType[] types;
+    // @Column
+    // private PokemonType[] types;
 
-    //replacing NamedResource with PokemonResponse fixes the .getWeight and .getHeight error.
-    public static SinglePokemon fromPokemonResponse(NamedResource response) {
+    public static SinglePokemon fromPokemonResponse(PokemonResponse response) {
         final var pokemon = new SinglePokemon();
         pokemon.setName(response.getName());
-       // pokemon.setWeight(response.getWeight());
-        // pokemon.setHeight(response.getHeight());
-        return null;
+        pokemon.setHeight(response.getHeight());
+        pokemon.setWeight(response.getWeight());
+
+        return pokemon;
     }
 
 }
