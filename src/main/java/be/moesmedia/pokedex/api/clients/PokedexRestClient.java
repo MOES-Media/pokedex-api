@@ -30,4 +30,5 @@ public class PokedexRestClient {
         log.info(namedResourceLocation);
         return pokedexRestTemplate.getForObject(namedResourceLocation, responseType);
     }
+
 }

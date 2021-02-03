@@ -22,12 +22,19 @@ public class PokedexController {
 
     private final PokedexDataService pokedexDataService;
 
+    @GetMapping("/")
+    public String greeting() {
+        return "welkom op de pokedex";
+    }
+
+
     @GetMapping
     @RequestMapping(value = "/generations")
     @ResponseStatus(HttpStatus.OK)
     public void getGenerations() {
         pokedexDataService.populateGenerationsTable();
     }
+
     @GetMapping
     @RequestMapping(value = "/pokemon/{pokemonNumber}")
     @ResponseStatus(HttpStatus.OK)

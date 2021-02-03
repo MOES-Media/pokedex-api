@@ -1,6 +1,6 @@
 package be.moesmedia.pokedex.api.clients.dto;
-
 import lombok.Data;
+
 
 @Data
 public class PokemonResponse {

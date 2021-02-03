@@ -1,15 +1,12 @@
 package be.moesmedia.pokedex.api.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import be.moesmedia.pokedex.api.clients.dto.GenerationResponse;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "pokemon_generations")
@@ -27,11 +24,21 @@ public class PokemonGeneration {
     @Column(nullable = false)
     private String location;
 
+    @OneToMany(mappedBy = "generation")
+    private List<SinglePokemon> pokemons = new ArrayList<>();
+
+
     public static PokemonGeneration fromGenerationResponse(GenerationResponse response) {
         final var generation = new PokemonGeneration();
         generation.setLocation(response.getMainRegion().getName());
         generation.setName(response.getName());
         return null;
+    }
+
+    public SinglePokemon addPokemonToGeneration(SinglePokemon pokemon){
+        pokemon.setGeneration(this);
+        pokemons.add(pokemon);
+        return pokemon;
     }
 
 }
