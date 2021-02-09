@@ -9,7 +9,7 @@ public class PokemonTypeResponse {
     private Type type;
 
     @Data
-    static class Type {
+    public static class Type {
         private String name;
     }
 }

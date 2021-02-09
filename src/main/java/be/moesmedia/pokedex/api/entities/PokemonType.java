@@ -1,14 +1,12 @@
 package be.moesmedia.pokedex.api.entities;
 
-
-import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
-import be.moesmedia.pokedex.api.clients.dto.PokemonTypeResponse;
 import lombok.Data;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
-import java.util.Set;
+import be.moesmedia.pokedex.api.clients.dto.PokemonTypeResponse;
+
+import java.util.List;
 
 @Entity
 @Table(name = "pokemon_types")
@@ -23,6 +21,13 @@ public class PokemonType {
     private String name;
 
     @ManyToMany(mappedBy = "types")
-    Set<SinglePokemon> pokemon;
+    List<SinglePokemon> pokemon;
+
+    public static PokemonType fromPokemonTypeResponse(PokemonTypeResponse response){
+        final var type = new PokemonType();
+        type.setName(response.getType().getName());
+
+        return type;
+    }
 
 }

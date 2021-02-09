@@ -1,13 +1,12 @@
 package be.moesmedia.pokedex.api.entities;
 
-import be.moesmedia.pokedex.api.clients.dto.PokemonAbilityResponse;
-import be.moesmedia.pokedex.api.clients.dto.PokemonMoveResponse;
 import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
-import be.moesmedia.pokedex.api.clients.dto.PokemonTypeResponse;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "pokemon")
@@ -31,32 +30,39 @@ public class SinglePokemon {
     private PokemonGeneration generation;
 
     @ManyToMany
-    @JoinTable(
-            name = "pokemon_type",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
-    Set<PokemonType> types;
+    @JoinTable(name = "pokemon_pokemon_types", joinColumns = @JoinColumn(name = "pokemon_id"), inverseJoinColumns = @JoinColumn(name = "pokemon_type_id"))
+    List<PokemonType> types;
 
     @ManyToMany
-    @Column (name = "abilities")
-    private PokemonAbilityResponse[] abilities;
+    @JoinTable(name = "pokemon_pokemon_abilities", joinColumns = @JoinColumn(name = "pokemon_id"), inverseJoinColumns = @JoinColumn(name = "pokemon_ability_id"))
+    private List<PokemonAbility> abilities;
 
     @ManyToMany
-    @Column (name ="move")
-    private PokemonMoveResponse[] moves;
+    @JoinTable(name = "pokemon_pokemon_moves", joinColumns = @JoinColumn(name = "pokemon_id"), inverseJoinColumns = @JoinColumn(name = "pokemon_move_id"))
+    private List<PokemonMove> moves;
 
-
-    @Column(name = "sprites")
-    private String sprite;
+    /*
+     * @OneToMany
+     * 
+     * @Column(name = "sprites") private String sprite;
+     */
 
     public static SinglePokemon fromPokemonResponse(PokemonResponse response) {
         final var pokemon = new SinglePokemon();
+
         pokemon.setName(response.getName());
         pokemon.setHeight(response.getHeight());
         pokemon.setWeight(response.getWeight());
-        pokemon.setTypes(response.getTypes());
-        pokemon.setAbilities(response.getAbilities());
-        pokemon.setMoves(response.getMoves());
+
+        pokemon.setAbilities(response.getAbilities().stream()
+                .map(abilityResponse -> PokemonAbility.fromPokemonAbilityResponse(abilityResponse))
+                .collect(Collectors.toList()));
+
+        pokemon.setTypes(
+                response.getTypes().stream().map(PokemonType::fromPokemonTypeResponse).collect(Collectors.toList()));
+
+        pokemon.setMoves(
+                response.getMoves().stream().map(PokemonMove::fromPokemonMoveResponse).collect(Collectors.toList()));
 
         return pokemon;
     }

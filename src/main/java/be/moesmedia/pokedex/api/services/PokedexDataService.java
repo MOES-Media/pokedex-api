@@ -4,7 +4,6 @@ import be.moesmedia.pokedex.api.clients.dto.PokemonResponse;
 import be.moesmedia.pokedex.api.entities.SinglePokemon;
 import be.moesmedia.pokedex.api.repositories.SinglePokemonRepository;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
@@ -18,9 +17,9 @@ import be.moesmedia.pokedex.api.repositories.PokemonGenerationsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PokedexDataService {
 
     private final PokedexRestClient pokedexRestClient;
@@ -28,8 +27,8 @@ public class PokedexDataService {
     private final PokemonGenerationsRepository pokemonGenerationsRepository;
     private final SinglePokemonRepository singlePokemonRepository;
 
-    private final Function<NamedResource, String> extractResourceLocation = namedResource -> namedResource
-            .getGenerationDetailLocation().replace(PokedexRestClientConfiguration.BASE_URL, "");
+    private final Function<NamedResource, String> extractResourceLocation = namedResource -> namedResource.getLocation()
+            .replace(PokedexRestClientConfiguration.BASE_URL, "");
 
     /**
      * TODO in other files 1. create pokemon entity 2. create pokemon repository
@@ -42,12 +41,18 @@ public class PokedexDataService {
         generationsOverview.getResults().stream().map(namedResource -> {
             log.info("fetching generation detail");
             final var generation = pokedexRestClient.getNamedResource(
-                    namedResource.getGenerationDetailLocation().replace(PokedexRestClientConfiguration.BASE_URL, ""),
+                    namedResource.getLocation().replace(PokedexRestClientConfiguration.BASE_URL, ""),
                     GenerationResponse.class);
             return generation;
         }).forEach(generationResponse -> {
 
+            // pokemone-species heeft een varieties property waar de default variety
+            // uitgehaald moet worden, daar zit de locatie van de pokemon met moves,
+            // abilities, types,... in
 
+            /**
+             * "varieties": [ { "is_default": true, "pokemon": { "name": "bulbasaur", "url": "https://pokeapi.co/api/v2/pokemon/1/" } } ]
+             */
 
             log.info("writing generation to database");
             final var pokemonGeneration = pokemonGenerationsRepository

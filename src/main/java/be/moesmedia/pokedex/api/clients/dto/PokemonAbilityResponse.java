@@ -8,7 +8,7 @@ public class PokemonAbilityResponse {
     private Ability ability;
 
     @Data
-    static class Ability {
+    public static class Ability {
         private String name;
     }
 

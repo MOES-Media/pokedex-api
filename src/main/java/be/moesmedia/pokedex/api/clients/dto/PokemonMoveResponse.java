@@ -8,7 +8,7 @@ public class PokemonMoveResponse {
     private Move move;
 
     @Data
-    static class Move {
+    public static class Move {
         private String move;
     }
 

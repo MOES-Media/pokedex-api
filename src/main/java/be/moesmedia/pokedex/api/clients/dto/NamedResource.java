@@ -9,6 +9,6 @@ public class NamedResource {
 
     private String name;
     @JsonProperty(value = "url")
-    private String generationDetailLocation;
+    private String location;
 
 }
