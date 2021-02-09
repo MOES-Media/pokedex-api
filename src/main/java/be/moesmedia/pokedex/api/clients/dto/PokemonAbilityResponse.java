@@ -3,12 +3,13 @@ package be.moesmedia.pokedex.api.clients.dto;
 import lombok.Data;
 
 @Data
-public class PokemonType {
+public class PokemonAbilityResponse {
 
-    private Type type;
+    private Ability ability;
 
     @Data
-    static class Type {
+    static class Ability {
         private String name;
     }
+
 }

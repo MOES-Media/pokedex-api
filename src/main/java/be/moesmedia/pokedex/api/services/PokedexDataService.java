@@ -46,6 +46,9 @@ public class PokedexDataService {
                     GenerationResponse.class);
             return generation;
         }).forEach(generationResponse -> {
+
+
+
             log.info("writing generation to database");
             final var pokemonGeneration = pokemonGenerationsRepository
                     .save(PokemonGeneration.fromGenerationResponse(generationResponse));
